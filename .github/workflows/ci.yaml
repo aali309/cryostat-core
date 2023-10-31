@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Fail if safe-to-test is not applied
-      if: (!contains(github.event.pull_request.labels.*.name, 'safe-to-test'))
+      if: github.repository_owner == 'cryostatio' && (!contains(github.event.pull_request.labels.*.name, 'safe-to-test'))
       run: exit 1
 
   build-core:
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install qemu
-      if: ${{ matrix.arch != 'amd64' }}
+      if: ${{ inputs.build-arch != 'amd64' }}
       continue-on-error: true
       run: |
         sudo apt-get update
