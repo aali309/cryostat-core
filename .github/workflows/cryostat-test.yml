@@ -63,7 +63,7 @@ jobs:
           })
           return { repo: result.data.head.repo.full_name, num: result.data.number, sha: result.data.head.sha, ref: result.data.head.ref }
 
-  check-image-existence: #testing
+  check-image-existence: #test
     runs-on: ubuntu-latest
     needs: [checkout-branch]
     steps:
@@ -86,7 +86,6 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             body: body
-            exit 1
           })
     - name: Exit if image does not exist
       if: steps.check-image.outputs.image_exists == 'false'
