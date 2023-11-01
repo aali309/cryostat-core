@@ -137,7 +137,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         status: ${{ job.status }}
 
-    - name: Leave a comment on pull failure #testing
+    - name: Leave a comment on pull failure #test
       uses: actions/github-script@v6
       if: steps.pull-image.outcome != 'success'
       with:
