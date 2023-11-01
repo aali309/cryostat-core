@@ -98,7 +98,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: pull cryostat image
       id: pull-image
-      run: podman pull ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-${{ env.build_arch }} |
+      run: podman pull ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-${{ env.build_arch }}
     - name: tag cryostat image
       run: podman tag ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-${{ env.build_arch }} quay.io/cryostat/cryostat
     - name: Run integration tests
