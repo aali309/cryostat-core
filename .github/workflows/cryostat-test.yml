@@ -63,37 +63,9 @@ jobs:
           })
           return { repo: result.data.head.repo.full_name, num: result.data.number, sha: result.data.head.sha, ref: result.data.head.ref }
 
-  check-image-existence: #test
-    runs-on: ubuntu-latest
-    needs: [checkout-branch]
-    steps:
-    - name: Check if image exists
-      id: check-image
-      run: |
-        IMAGE_TAG="ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-amd64"
-        if [[ ! "$(podman images -q $IMAGE_TAG)" ]]; then
-          echo "Image does not exist. Please wait for the initial build and push to complete before testing."
-          echo "image_exists=false" >> $GITHUB_OUTPUT
-        fi
-    - name: Comment
-      if: steps.check-image.outputs.image_exists == 'false'
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const body = `Image does not exist! Please wait for the initial build and push to complete before \`/build_test\` command.`;
-          await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: body
-          })
-    - name: Exit if image does not exist
-      if: steps.check-image.outputs.image_exists == 'false'
-      run: exit 1
-
   cryostat-test:
     runs-on: ubuntu-latest
-    needs: [checkout-branch, check-image-existence]
+    needs: [ checkout-branch ]
     env:
       build_arch: 'amd64'
     steps:
@@ -125,7 +97,8 @@ jobs:
         username: ${{ github.event.comment.user.login }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: pull cryostat image
-      run: podman pull ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-${{ env.build_arch }}
+      id: pull-image
+      run: podman pull ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-${{ env.build_arch }} |
     - name: tag cryostat image
       run: podman tag ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-${{ env.build_arch }} quay.io/cryostat/cryostat
     - name: Run integration tests
@@ -163,3 +136,16 @@ jobs:
         sha: ${{ needs.checkout-branch.outputs.PR_head_sha}}
         token: ${{ secrets.GITHUB_TOKEN }}
         status: ${{ job.status }}
+
+    - name: Leave a comment on pull failure
+      if: steps.pull-image.outcome != 'success'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const body = `Image does not exist! Please wait for the initial build and push to complete before \`/build_test\` command.`;
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          })
