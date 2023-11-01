@@ -73,7 +73,7 @@ jobs:
         IMAGE_TAG="ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-amd64"
         if [[ -z "$(podman images -q $IMAGE_TAG)" ]]; then
           echo "Image does not exist. Please wait for the initial build and push to complete before testing."
-          ::set-output name=image_exists::false
+          echo "image_exists=false"
           exit 1
         fi
     - name: Comment
