@@ -63,6 +63,33 @@ jobs:
           })
           return { repo: result.data.head.repo.full_name, num: result.data.number, sha: result.data.head.sha, ref: result.data.head.ref }
 
+  check-image-existence:
+    runs-on: ubuntu-latest
+    needs: [checkout-branch]
+    steps:
+    - name: Check if image exists
+      id: check-image
+      run: |
+        IMAGE_TAG="ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ needs.checkout-branch.outputs.PR_num }}-${{ needs.checkout-branch.outputs.PR_head_sha }}-linux-amd64"
+        if [[ -z "$(podman images -q $IMAGE_TAG)" ]]; then
+          echo "Image does not exist. Please wait for the initial build and push to complete before testing."
+          ::set-output name=image_exists::false
+          exit 1
+        fi
+    - name: Comment
+      if: steps.check-image.outputs.image_exists == 'false'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const body = "Image does not exist! Please wait for the initial build and push to complete before \`/build_test\` command.";
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          })
+
+
   cryostat-test:
     runs-on: ubuntu-latest
     needs: [checkout-branch]
@@ -116,7 +143,7 @@ jobs:
       if: always()
       with:
         script: |
-          const name = '${{ github.workflow	}}';
+          const name = '${{ github.job	}}';
           const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
           const success = '${{ job.status }}' === 'success';
           const body = `${name}: ${success ? 'All tests pass ✅' : 'At least one test failed ❌'}\n${url}`;
