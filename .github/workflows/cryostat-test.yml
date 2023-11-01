@@ -138,8 +138,8 @@ jobs:
         status: ${{ job.status }}
 
     - name: Leave a comment on pull failure #testing
-      if: steps.pull-image.outcome != 'success'
       uses: actions/github-script@v6
+      if: steps.pull-image.outcome != 'success'
       with:
         script: |
           const body = `Image does not exist! Please wait for the initial build and push to complete before \`/build_test\` command.`;
