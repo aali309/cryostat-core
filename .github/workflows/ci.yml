@@ -121,6 +121,13 @@ jobs:
         pull-requests: write
         statuses: write
     steps:
+    - uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/cryostat3
