@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Fail if safe-to-test is not applied
-      if: github.repository_owner == 'cryostatio' && (!contains(github.event.pull_request.labels.*.name, 'safe-to-test'))
+      if: (!contains(github.event.pull_request.labels.*.name, 'safe-to-test'))
       run: exit 1
 
   build-core:
@@ -239,4 +239,5 @@ jobs:
           # or arm64
           CRYOSTAT_IMAGE=${{ env.arm64_image }} sh smoketest.sh
           ```
+
 
