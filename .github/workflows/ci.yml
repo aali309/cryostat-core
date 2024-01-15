@@ -299,3 +299,4 @@ jobs:
           # cryostat3-java21
           CRYOSTAT3_IMAGE=${{ env.cryostat3_java21_image }} sh smoketest.sh
           ```
+#test
