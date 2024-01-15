@@ -277,4 +277,3 @@ jobs:
           # arm64, Java 21
           CRYOSTAT3_IMAGE=${{ env.cryostat3_java21_arm64_image }} sh smoketest.sh
           ```
-#test
