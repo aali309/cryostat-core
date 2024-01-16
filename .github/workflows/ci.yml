@@ -192,6 +192,7 @@ jobs:
       with:
         name: cryostat3-${{ matrix.arch }}
         path: ${{ github.workspace }}/cryostat3-${{ matrix.arch }}.tar
+      continue-on-error: ${{ matrix.java != '17' }}
 
   push-to-ghcr:
     runs-on: ubuntu-latest
@@ -333,4 +334,4 @@ jobs:
           CRYOSTAT3_java21arm64_IMAGE=${{ env.cryostat3_java21_arm64_image }} sh smoketest.sh
           
           ```
-      continue-on-error: true
+      continue-on-error: ${{ env.cryostat3_java21_amd64_image == '' || env.cryostat3_java21_arm64_image == '' }}
