@@ -311,4 +311,3 @@ jobs:
           # or cryostat3-java17-arm64
           CRYOSTAT3_java17arm64_IMAGE=${{ env.cryostat3_java17_arm64_image }} sh smoketest.sh 
           ```
-      #test
