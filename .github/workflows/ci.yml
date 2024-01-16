@@ -291,7 +291,7 @@ jobs:
           arm64, ${{ env.arm64_image }}
           cryostat3-java17_amd64, ${{ env.cryostat3_java17_amd64_image }}
           cryostat3-java17_arm64, ${{ env.cryostat3_java17_arm64_image }}
-          
+
     - uses: thollander/actions-comment-pull-request@v2
       with:
         message: |-
@@ -311,4 +311,4 @@ jobs:
           # or cryostat3-java17-arm64
           CRYOSTAT3_java17arm64_IMAGE=${{ env.cryostat3_java17_arm64_image }} sh smoketest.sh 
           ```
-      
+      #test
