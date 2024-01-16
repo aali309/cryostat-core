@@ -249,7 +249,7 @@ jobs:
     - name: Load cryostat3 image
       run: podman load -i cryostat3-${{ matrix.arch }}.tar
     - name: Tag cryostat3 image
-      run: podman tag cryostat3 ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ github.event.number }}-${{ github.event.pull_request.head.sha }}-linux-${{ matrix.arch }}-java${{ matrix.java }}
+      run: podman tag cryostat3 ghcr.io/${{ github.repository_owner }}/cryostat-core:pr-${{ github.event.number }}-${{ github.event.pull_request.head.sha }}-linux-${{ matrix.arch }}
     - name: Push PR test image to ghcr.io
       id: push-cryostat3-to-ghcr
       uses: redhat-actions/push-to-registry@v2
