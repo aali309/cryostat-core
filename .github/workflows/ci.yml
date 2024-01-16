@@ -335,3 +335,4 @@ jobs:
           
           ```
       continue-on-error: ${{ env.cryostat3_java21_amd64_image == '' || env.cryostat3_java21_arm64_image == '' }}
+#test
